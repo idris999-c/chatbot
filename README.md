@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Chatbot
 
-## Getting Started
+Modern, responsive AI chatbot uygulaması. OpenAI GPT-3.5-turbo modeli ile güçlendirilmiş, Next.js 16 ve Tailwind CSS ile geliştirilmiştir.
 
-First, run the development server:
+## Özellikler
 
+- 🤖 OpenAI GPT-3.5-turbo entegrasyonu
+- 💬 Gerçek zamanlı chat interface
+- 🌙 Dark/Light mode desteği
+- 📱 Tam responsive tasarım
+- ⚡ Hızlı ve modern UI/UX
+- 🔒 Güvenli API endpoint'leri
+- 🎨 Tailwind CSS ile modern tasarım
+
+## Kurulum
+
+1. Projeyi klonlayın:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd chatbot
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Bağımlılıkları yükleyin:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Environment variables'ları ayarlayın:
+```bash
+cp env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. `.env.local` dosyasını düzenleyin ve OpenAI API key'inizi ekleyin:
+```
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
-## Learn More
+5. Development server'ı başlatın:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+6. Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresini açın.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production Build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+npm start
+```
 
-## Deploy on Vercel
+## API Endpoints
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /api/chat` - Chat mesajları için API endpoint
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Teknolojiler
+
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **AI**: OpenAI GPT-3.5-turbo
+- **Deployment**: Vercel ready
+
+## Geliştirme
+
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Start production
+npm start
+
+# Lint
+npm run lint
+```
+
+## Lisans
+
+MIT License
