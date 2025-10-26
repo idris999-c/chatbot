@@ -117,7 +117,7 @@ export default function ChatInterface() {
               AI Chatbot
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Powered by OpenAI
+              Powered by Google AI
             </p>
           </div>
         </div>
