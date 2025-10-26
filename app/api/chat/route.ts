@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { scrapeUrl, isValidUrl, normalizeUrl } from '@/lib/webScraper';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || 'dummy-key-for-build');
 
@@ -22,27 +23,54 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // URL tespiti için regex
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = message.match(urlRegex);
+    let webContent = '';
+
+    // Eğer mesajda URL varsa, içeriği çek
+    if (urls && urls.length > 0) {
+      for (const urlStr of urls) {
+        const normalizedUrl = normalizeUrl(urlStr);
+        if (isValidUrl(normalizedUrl)) {
+          const scraped = await scrapeUrl(normalizedUrl);
+          if (scraped) {
+            webContent += `\n\n[Bir web sitesinden alınan içerik: ${scraped.title}]\n${scraped.content}\n[Bu içerik ${scraped.url} adresinden alınmıştır]\n\n`;
+          }
+        }
+      }
+    }
+
     // Get the Gemini model - Google AI Studio'da desteklenen model
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
     });
 
     // Build conversation history with proper format
-    let conversationHistory = 'Sen yardımcı bir AI asistanısın. Kullanıcılara Türkçe olarak yardımcı ol. Kısa ve net cevaplar ver.\n\n';
+    let systemPrompt = 'Sen yardımcı bir AI asistanısın. Kullanıcılara Türkçe olarak yardımcı ol. Kısa ve net cevaplar ver.\n\n';
+    
+    // Eğer web içeriği varsa, AI'ya bildir
+    if (webContent) {
+      systemPrompt += 'ÖNEMLİ: Kullanıcı bir web sitesinden içerik paylaşmış. Bu içeriği dikkate alarak cevap ver.\n\n';
+      systemPrompt += 'Web Sitesi İçeriği:\n' + webContent;
+      systemPrompt += '\nYukarıdaki web içeriğini kullanarak kullanıcının sorusunu cevapla.\n\n';
+    }
     
     // Add previous conversation
     if (history && history.length > 0) {
       history.forEach((msg: any) => {
         if (msg.role === 'user') {
-          conversationHistory += `Kullanıcı: ${msg.content}\n`;
+          systemPrompt += `Kullanıcı: ${msg.content}\n`;
         } else {
-          conversationHistory += `Asistan: ${msg.content}\n`;
+          systemPrompt += `Asistan: ${msg.content}\n`;
         }
       });
     }
 
     // Add current message
-    conversationHistory += `Kullanıcı: ${message}\nAsistan:`;
+    systemPrompt += `Kullanıcı: ${message}\nAsistan:`;
+
+    const conversationHistory = systemPrompt;
 
     const result = await model.generateContent(conversationHistory);
     const response = await result.response;
