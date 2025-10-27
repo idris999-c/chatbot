@@ -98,10 +98,10 @@ export class WebCrawler {
    */
   private extractLinks(html: string): string[] {
     const links: string[] = [];
-    const polkaRegex = /href=["']([^"']+)["']/gi;
+    const hrefRegex = /href=["']([^"']+)["']/gi;
     let match;
 
-    while ((match = polkaRegex.exec(html)) !== null) {
+    while ((match = hrefRegex.exec(html)) !== null) {
       const link = match[1];
       
       // Göreceli linkleri tam linke çevir
