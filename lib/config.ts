@@ -23,12 +23,15 @@ export interface WebBrowsingConfig {
   timeout: number;
 }
 
+// Hedef site URL'i - Buradan sadece bu site taranacak
+export const TARGET_SITE_URL = process.env.TARGET_SITE_URL || '';
+
 // Varsayılan genel yapılandırma
 export const defaultConfig: WebBrowsingConfig = {
-  allowedDomains: [], // Boş = tüm domainlere izin ver
+  allowedDomains: [], // Boş = tüm domainlere izin ver (ama TARGET_SITE_URL kullanılacak)
   blockedDomains: [],
-  maxDepth: 1, // Sadece verilen URL'i tarar, daha derine inmez
-  maxPages: 1, // Tek sayfa
+  maxDepth: 2, // 2 seviye derine kadar tara
+  maxPages: 20, // Maksimum 20 sayfa
   userAgent: 'Mozilla/5.0 (compatible; WebCrawler/1.0)',
   timeout: 10000, // 10 saniye
 };

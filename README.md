@@ -79,7 +79,89 @@ Chatbot otomatik olarak:
 - **Icons**: Lucide React
 - **AI**: Google Gemini (Gemini 2.5 Flash)
 - **Web Scraping**: Cheerio
-- **Deployment**: Vercel ready
+- **Deployment**: Netlify ready
+
+## Projeye Entegrasyon Rehberi
+
+### 1. Site-Specific Chatbot Olarak Kullanım
+
+Bu chatbot'u belirli bir web sitesine özel olarak kullanmak için:
+
+#### Adım 1: Environment Variables Ayarlama
+`.env.local` dosyasını oluşturun:
+```bash
+cp env.example .env.local
+```
+
+`.env.local` dosyasını düzenleyin:
+```env
+# Google AI API Key (zorunlu)
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Hedef site URL'i (zorunlu - site-specific için)
+TARGET_SITE_URL=https://your-website.com
+```
+
+#### Adım 2: Site Yapılandırması
+- `TARGET_SITE_URL` belirlediğiniz siteyi işaret eder
+- Chatbot sadece bu site ile ilgili sorulara cevap verir
+- Site dışı sorulara "Üzgünüm, ben sadece [site adı] hakkında soruları cevaplayabilirim." der
+
+#### Adım 3: Test Etme
+```bash
+npm run dev
+```
+
+Tarayıcıda `http://localhost:3000` açın ve test edin:
+- Site ile ilgili sorular: ✅ Cevap verir
+- Site dışı sorular: ❌ Kısıtlı cevap verir
+
+### 2. Genel Chatbot Olarak Kullanım
+
+Genel amaçlı chatbot olarak kullanmak için:
+
+#### Adım 1: Environment Variables
+```env
+# Google AI API Key (zorunlu)
+GOOGLE_API_KEY=your_google_api_key_here
+
+# TARGET_SITE_URL'i boş bırakın veya yorum satırı yapın
+# TARGET_SITE_URL=
+```
+
+#### Adım 2: Test Etme
+- Tüm konularda sorulara cevap verir
+- Site kısıtlaması yoktur
+
+### 3. Önemli Notlar
+
+#### Site Tarama Özellikleri:
+- Maksimum 2 seviye derinlik
+- Maksimum 20 sayfa
+- Sadece aynı domain içindeki sayfalar
+- İlk mesajda otomatik tarama başlar
+
+#### Performans:
+- İlk tarama 10-30 saniye sürebilir
+- Sonraki mesajlar hızlıdır (cache'den)
+- Server restart'ta tarama tekrarlanır
+
+#### Güvenlik:
+- Sadece public sayfalar taranır
+- Login gerektiren sayfalar atlanır
+- HTTPS zorunlu değil ama önerilir
+
+### 4. Sorun Giderme
+
+#### Site taranmıyor:
+- `TARGET_SITE_URL` doğru mu?
+- Site erişilebilir mi?
+- Console'da hata var mı?
+
+#### Yanlış cevaplar:
+- Site içeriği güncel mi?
+- Tarama tamamlandı mı?
+- Cache'i temizlemek için server'ı yeniden başlatın
 
 ## Geliştirme
 

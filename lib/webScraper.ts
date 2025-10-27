@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio';
 export interface ScrapedContent {
   title: string;
   content: string;
+  html: string;
   url: string;
 }
 
@@ -58,6 +59,7 @@ export async function scrapeUrl(url: string): Promise<ScrapedContent | null> {
     return {
       title,
       content,
+      html,
       url,
     };
   } catch (error) {

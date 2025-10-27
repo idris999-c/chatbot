@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { scrapeUrl, isValidUrl, normalizeUrl } from '@/lib/webScraper';
+import { siteCache } from '@/lib/siteCache';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || 'dummy-key-for-build');
 
@@ -23,37 +23,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // URL tespiti için regex
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urls = message.match(urlRegex);
-    let webContent = '';
+    // Site içeriklerini cache'den al (eğer yoksa tara)
+    const cacheStatus = siteCache.getCrawlStatus();
+    let siteContent = '';
 
-    // Eğer mesajda URL varsa, içeriği çek
-    if (urls && urls.length > 0) {
-      for (const urlStr of urls) {
-        const normalizedUrl = normalizeUrl(urlStr);
-        if (isValidUrl(normalizedUrl)) {
-          const scraped = await scrapeUrl(normalizedUrl);
-          if (scraped) {
-            webContent += `\n\n[Bir web sitesinden alınan içerik: ${scraped.title}]\n${scraped.content}\n[Bu içerik ${scraped.url} adresinden alınmıştır]\n\n`;
-          }
-        }
-      }
+    if (!cacheStatus.isCrawled && !cacheStatus.isCrawling) {
+      // İlk çağrıda siteyi tara (async, arka planda devam eder)
+      siteCache.crawlSite().catch(err => console.error('Crawl error:', err));
+    } else if (cacheStatus.isCrawled && cacheStatus.pageCount > 0) {
+      // Siteden taranan içerikleri al
+      siteContent = siteCache.getCombinedContent();
     }
+    // Eğer isCrawled=true ama pageCount=0 ise, site yapılandırılmamış demektir
+    // Normal chatbot olarak devam eder
 
-    // Get the Gemini model - Google AI Studio'da desteklenen model
+    // Get the Gemini model
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
     });
 
-    // Build conversation history with proper format
-    let systemPrompt = 'Sen yardımcı bir AI asistanısın. Kullanıcılara Türkçe olarak yardımcı ol. Kısa ve net cevaplar ver.\n\n';
+    // Build system prompt
+    let systemPrompt = '';
     
-    // Eğer web içeriği varsa, AI'ya bildir
-    if (webContent) {
-      systemPrompt += 'ÖNEMLİ: Kullanıcı bir web sitesinden içerik paylaşmış. Bu içeriği dikkate alarak cevap ver.\n\n';
-      systemPrompt += 'Web Sitesi İçeriği:\n' + webContent;
-      systemPrompt += '\nYukarıdaki web içeriğini kullanarak kullanıcının sorusunu cevapla.\n\n';
+    // Eğer site içeriği varsa, AI'ya bildir
+    if (siteContent) {
+      systemPrompt += 'Sen sadece belirli bir web sitesinin içeriğinden cevap veren bir AI asistanısın.\n\n';
+      systemPrompt += 'ÖNEMLİ KURALLAR:\n';
+      systemPrompt += '1. SADECE aşağıdaki web sitesi içeriği ile ilgili sorulara cevap vereceksin\n';
+      systemPrompt += '2. Site dışı hiçbir soruya cevap VERME\n';
+      systemPrompt += '3. Site dışı bir soru sorulursa: "Üzgünüm, ben sadece [site adı] hakkında soruları cevaplayabilirim." de\n';
+      systemPrompt += '4. Türkçe cevap ver, kısa ve net ol\n\n';
+      systemPrompt += 'Web Sitesi İçeriği:\n';
+      systemPrompt += siteContent;
+      systemPrompt += '\n\nYukarıdaki web sitesi içeriğini kullanarak kullanıcının sorusunu cevapla.\n\n';
+    } else {
+      // Genel chatbot
+      systemPrompt += 'Sen yardımcı bir AI asistanısın. Kullanıcılara Türkçe olarak yardımcı ol. Kısa ve net cevaplar ver.\n\n';
     }
     
     // Add previous conversation
@@ -70,9 +75,7 @@ export async function POST(request: NextRequest) {
     // Add current message
     systemPrompt += `Kullanıcı: ${message}\nAsistan:`;
 
-    const conversationHistory = systemPrompt;
-
-    const result = await model.generateContent(conversationHistory);
+    const result = await model.generateContent(systemPrompt);
     const response = await result.response;
     const text = response.text();
 
@@ -87,3 +90,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
