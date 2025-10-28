@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AI Chatbot",
-  description: "Modern AI-powered chatbot with OpenAI integration",
+  description: "Modern AI-powered chatbot with Google Gemini integration",
 };
 
 export default function RootLayout({
