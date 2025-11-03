@@ -118,7 +118,7 @@ export default function ChatbotWidget() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-40 hover:scale-110 active:scale-95"
+        className="fixed bottom-6 right-6 w-12 h-12 bg-black hover:bg-gray-900 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-40 hover:scale-110 active:scale-95"
         aria-label="Open chat"
       >
         {isOpen ? (
@@ -130,29 +130,29 @@ export default function ChatbotWidget() {
 
       {/* Desktop & Tablet Chat Window */}
       <div
-        className={`fixed bottom-20 right-4 md:right-6 w-[calc(100%-2rem)] md:w-96 max-w-md h-[500px] md:h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl z-30 flex flex-col border border-gray-200 dark:border-gray-700 transition-all duration-300 lg:max-w-none ${
+        className={`fixed bottom-20 right-4 md:right-6 w-[calc(100%-2rem)] md:w-96 max-w-md h-[500px] md:h-[600px] bg-black rounded-2xl shadow-2xl z-30 flex flex-col border border-gray-800 transition-all duration-300 lg:max-w-none ${
           isOpen 
             ? 'animate-in slide-in-from-bottom-4 fade-in' 
             : 'opacity-0 scale-0 pointer-events-none'
         }`}
       >
         {/* Header */}
-        <div className="bg-linear-to-r from-blue-500 to-blue-600 px-6 py-4 rounded-t-2xl flex items-center justify-between">
+        <div className="bg-black px-6 py-4 rounded-t-2xl flex items-center justify-between border-b border-gray-800">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-white">
                 Bizimle sohbet edin 🤖
               </h2>
-              <p className="text-xs text-blue-100">Yardımcı chatbot</p>
+              <p className="text-xs text-gray-400">Yardımcı chatbot</p>
             </div>
           </div>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-black">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -166,21 +166,21 @@ export default function ChatbotWidget() {
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
                     message.role === 'user'
-                      ? 'bg-blue-500'
-                      : 'bg-gray-200 dark:bg-gray-700'
+                      ? 'bg-white'
+                      : 'bg-black'
                   }`}
                 >
                   {message.role === 'user' ? (
-                    <User className="w-4 h-4 text-white" />
+                    <User className="w-4 h-4 text-black" />
                   ) : (
-                    <Bot className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                    <Bot className="w-4 h-4 text-white" />
                   )}
                 </div>
                 <div
                   className={`px-3 py-2 rounded-lg text-sm ${
                     message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700'
+                      ? 'bg-white text-black'
+                      : 'bg-black text-white border border-gray-700'
                   }`}
                 >
                   <p className="whitespace-pre-wrap wrap-break-word">{message.content}</p>
@@ -195,13 +195,13 @@ export default function ChatbotWidget() {
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex items-start space-x-2">
-                <div className="w-7 h-7 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center shrink-0">
-                  <Bot className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                <div className="w-7 h-7 bg-black rounded-full flex items-center justify-center shrink-0">
+                  <Bot className="w-4 h-4 text-white" />
                 </div>
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2 rounded-lg">
+                <div className="bg-black border border-gray-700 px-3 py-2 rounded-lg">
                   <div className="flex items-center space-x-2">
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    <span className="text-xs text-gray-500">Yazıyor...</span>
+                    <Loader2 className="w-3 h-3 animate-spin text-white" />
+                    <span className="text-xs text-gray-300">Yazıyor...</span>
                   </div>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function ChatbotWidget() {
         </div>
 
         {/* Input Area */}
-        <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-3 rounded-b-2xl">
+        <div className="bg-black border-t border-gray-800 px-4 py-3 rounded-b-2xl">
           <form onSubmit={handleSubmit} className="flex space-x-2">
             <input
               ref={inputRef}
@@ -220,13 +220,13 @@ export default function ChatbotWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Mesajınızı yazın..."
-              className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+              className="flex-1 px-3 py-2 text-sm border border-gray-800 rounded-lg focus:outline-none bg-black text-white placeholder-gray-500"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors"
+              className="px-3 py-2 bg-white text-black rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors"
             >
               <Send className="w-4 h-4" />
             </button>
