@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import { X, Send, User, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 // Zaman formatı için yardımcı fonksiyon
 const formatTime = (timestamp: Date) => {
@@ -124,7 +125,13 @@ export default function ChatbotWidget() {
         {isOpen ? (
           <X className="w-5 h-5 animate-in fade-in duration-200" />
         ) : (
-          <MessageCircle className="w-5 h-5 animate-in fade-in duration-200" />
+          <Image 
+            src="/chatbot.svg" 
+            alt="Chatbot Icon" 
+            width={20} 
+            height={20} 
+            className="w-5 h-5 animate-in fade-in duration-200 brightness-0 invert"
+          />
         )}
       </button>
 
@@ -138,16 +145,11 @@ export default function ChatbotWidget() {
       >
         {/* Header */}
         <div className="bg-black px-6 py-4 rounded-t-2xl flex items-center justify-between border-b border-gray-800">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-              <Bot className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                Bizimle sohbet edin 🤖
-              </h2>
-              <p className="text-xs text-gray-400">Yardımcı chatbot</p>
-            </div>
+          <div>
+            <h2 className="text-lg font-semibold text-white">
+              Bizimle sohbet edin
+            </h2>
+            <p className="text-xs text-gray-400">Yardımcı chatbot</p>
           </div>
         </div>
 
@@ -164,7 +166,7 @@ export default function ChatbotWidget() {
                 }`}
               >
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${
                     message.role === 'user'
                       ? 'bg-white'
                       : 'bg-black'
@@ -173,7 +175,13 @@ export default function ChatbotWidget() {
                   {message.role === 'user' ? (
                     <User className="w-4 h-4 text-black" />
                   ) : (
-                    <Bot className="w-4 h-4 text-white" />
+                    <Image 
+                      src="/chatbot.svg" 
+                      alt="Chatbot Icon" 
+                      width={20} 
+                      height={20} 
+                      className="w-5 h-5 brightness-0 invert"
+                    />
                   )}
                 </div>
                 <div
@@ -195,8 +203,14 @@ export default function ChatbotWidget() {
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex items-start space-x-2">
-                <div className="w-7 h-7 bg-black rounded-full flex items-center justify-center shrink-0">
-                  <Bot className="w-4 h-4 text-white" />
+                <div className="w-7 h-7 bg-black rounded-full flex items-center justify-center shrink-0 overflow-hidden">
+                  <Image 
+                    src="/chatbot.svg" 
+                    alt="Chatbot Icon" 
+                    width={16} 
+                    height={16} 
+                    className="w-4 h-4 brightness-0 invert"
+                  />
                 </div>
                 <div className="bg-black border border-gray-700 px-3 py-2 rounded-lg">
                   <div className="flex items-center space-x-2">
