@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Chatbot",
   description: "Modern AI-powered chatbot with Google Gemini integration",
+  icons: {
+    icon: "/chatbot.svg",
+    shortcut: "/chatbot.svg",
+    apple: "/chatbot.svg",
+  },
 };
 
 export default function RootLayout({
